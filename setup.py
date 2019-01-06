@@ -27,6 +27,7 @@ VERSION = None
 # What packages are required for this module to be executed?
 REQUIRED = [
     'requests>=2.21.0',
+    'click>=7.0',
 ]
 
 # What packages are required only for tests?
@@ -138,9 +139,9 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests',)),
 
-    # entry_points={
-    #     'console_scripts': ['mycli=mymodule:cli'],
-    # },
+    entry_points={
+        'console_scripts': ['ao3-poster=ao3_poster.cli:cli'],
+    },
     install_requires=REQUIRED,
     tests_require=TESTS,
     extras_require=EXTRAS,
