@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 requests = "*"
 click = "*"
+gspread = "*"
+oauth2client = "*"
+google-api-python-client = "*"
 
 [requires]
 python_version = "3.7"
