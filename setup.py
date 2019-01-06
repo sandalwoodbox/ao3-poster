@@ -28,6 +28,7 @@ VERSION = None
 REQUIRED = [
     'requests>=2.21.0',
     'click>=7.0',
+    'google-api-python-client>=1.7.7',
 ]
 
 # What packages are required only for tests?
