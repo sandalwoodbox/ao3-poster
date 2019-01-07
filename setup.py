@@ -141,7 +141,7 @@ setup(
     packages=find_packages(exclude=('tests',)),
 
     entry_points={
-        'console_scripts': ['ao3-poster=ao3_poster.cli:cli'],
+        'console_scripts': ['ao3=ao3_poster.cli:cli'],
     },
     install_requires=REQUIRED,
     tests_require=TESTS,
