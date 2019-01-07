@@ -1,6 +1,8 @@
 ao3-poster
 ==========
 
+[![Build Status](https://travis-ci.org/melinath/ao3-poster.svg?branch=master)](https://travis-ci.org/melinath/ao3-poster)
+
 This python package exists to make posting to ao3 simpler.
 The goal is to allow people to have a single source-of-truth document which is easy to edit, then batch-upload items from that document to ao3.
 
