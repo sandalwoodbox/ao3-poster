@@ -8,6 +8,7 @@ REQUEST_HEADERS = {
 SESSION_COOKIE_NAME = '_otwarchive_session'
 
 LOGIN_URL = 'https://archiveofourown.org/users/login'
+LOGOUT_URL = 'https://archiveofourown.org/users/logout'
 POST_URL = 'https://archiveofourown.org/works'
 
 HEADER_MAP = {
@@ -74,12 +75,19 @@ def login(username, password):
         LOGIN_URL,
         login_data,
     )
-    import pdb; pdb.set_trace()
 
     if _is_failed_login(response):
         return None
 
     return response.cookies[SESSION_COOKIE_NAME]
+
+
+def logout(session_id):
+    requests.get(
+        LOGOUT_URL,
+        headers=REQUEST_HEADERS,
+        cookies={SESSION_COOKIE_NAME: session_id}
+    )
 
 
 def post(session_id, data, body_template=None):
