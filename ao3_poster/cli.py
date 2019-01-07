@@ -1,9 +1,9 @@
-from google.auth.exceptions import DefaultCredentialsError
 import click
+from google.auth.exceptions import DefaultCredentialsError
 
 from . import ao3
-from .config import save_session_id
 from .config import load_session_id
+from .config import save_session_id
 from .utils.google_sheets import get_sheet_data
 
 
@@ -49,7 +49,3 @@ def post(sheet_id):
         headers, rows = get_sheet_data(sheet_id)
     except DefaultCredentialsError as exc:
         raise click.ClickException(str(exc))
-
-    import pdb; pdb.set_trace()
-
-
