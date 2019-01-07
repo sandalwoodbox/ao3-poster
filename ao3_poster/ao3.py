@@ -39,13 +39,13 @@ def build_post_data(data, body_template=None):
             for item in value.split(','):
                 post_data.append((
                     post_key,
-                    item.trim(),
+                    item.strip(),
                 ))
         else:
-            post_data.append(
+            post_data.append((
                 post_key,
-                value.trim(),
-            )
+                value.strip(),
+            ))
 
     return post_data
 
