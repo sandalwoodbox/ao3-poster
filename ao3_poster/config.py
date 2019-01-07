@@ -1,4 +1,6 @@
+import json
 import os
+
 
 AO3_DIRECTORY = os.path.expanduser('~/.ao3')
 CONFIG_FILE = os.path.join(AO3_DIRECTORY, 'config.json')
@@ -12,7 +14,7 @@ def save_session_id(session_id):
         json.dump({'session_id': session_id}, fp)
 
 
-def load_session_id(session_id):
+def load_session_id():
     if not os.path.exists(AO3_DIRECTORY):
         return None
 
