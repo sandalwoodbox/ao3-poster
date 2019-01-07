@@ -11,6 +11,8 @@ click = "*"
 gspread = "*"
 oauth2client = "*"
 google-api-python-client = "*"
+beautifulsoup4 = "*"
+lxml = "*"
 
 [requires]
 python_version = "3.7"
