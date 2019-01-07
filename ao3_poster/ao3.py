@@ -1,9 +1,10 @@
 import bs4
 import requests
 
+
 REQUEST_HEADERS = {
     # AO3 blocks python-requests by default so we need to fake a different user agent.
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',  # noqa: E501
 }
 SESSION_COOKIE_NAME = '_otwarchive_session'
 
@@ -86,14 +87,15 @@ def logout(session_id):
     requests.get(
         LOGOUT_URL,
         headers=REQUEST_HEADERS,
-        cookies={SESSION_COOKIE_NAME: session_id}
+        cookies={SESSION_COOKIE_NAME: session_id},
     )
 
 
 def post(session_id, data, body_template=None):
     # Takes data, posts to ao3, and returns the URL for the created work.
     post_data = build_post_data(data)
-    session.post(
+    requests.post(
         POST_URL,
         post_data,
+        cookies={SESSION_COOKIE_NAME: session_id},
     )
