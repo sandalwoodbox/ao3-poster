@@ -30,6 +30,8 @@ REQUIRED = [
     'requests>=2.21.0',
     'click>=7.0',
     'google-api-python-client>=1.7.7',
+    'beautifulsoup4>=4.7.1',
+    'lxml>=4.3.0',
 ]
 
 # What packages are required only for tests?
