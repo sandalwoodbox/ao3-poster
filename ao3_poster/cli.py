@@ -5,11 +5,7 @@ from google.auth.exceptions import DefaultCredentialsError
 import click
 
 from . import ao3
-from .constants import AO3_DIRECTORY
 from .utils.google_sheets import get_sheet_data
-
-
-CONFIG_FILE = os.path.join(AO3_DIRECTORY, 'config.json')
 
 
 @click.group()
@@ -29,12 +25,7 @@ def login():
     if session_id is None:
         click.secho('Login failed. Please try again.', fg='red')
     else:
-        if not os.path.exists(AO3_DIRECTORY):
-            os.makedirs(AO3_DIRECTORY)
-
-        with open(CONFIG_FILE, 'w') as fp:
-            json.dump({'session_id': session_id}, fp)
-
+        save_session_id(session_id)
         click.secho('Login successful. Session id saved.')
 
 
