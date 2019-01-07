@@ -5,9 +5,8 @@ python:
   - "3.6"
   - "3.7"
 install:
-  - pip install pipenv
-  - pipenv install
-  - python --version
+  - pip install -e .
+  - pip install -e .[flake8]
 script:
   - flake8
   - pipenv run python setup.py test
