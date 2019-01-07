@@ -13,6 +13,8 @@ oauth2client = "*"
 google-api-python-client = "*"
 beautifulsoup4 = "*"
 lxml = "*"
+flake8 = "*"
+flake8-isort = "*"
 
 [requires]
 python_version = "3.7"
