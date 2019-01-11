@@ -27,11 +27,11 @@ class Row(MutableMapping):
         return self.data.__repr__()
 
 
-def get_sheet_data(sheet_id):
+def get_sheet_data(sheet_id, count):
     service = build('sheets', 'v4')
     result = service.spreadsheets().values().get(
         spreadsheetId=sheet_id,
-        range='A:ZZ',
+        range='A1:ZZ{}'.format(count + 1),
     ).execute()
     rows = result.get('values', [])
     headers = rows[0]
