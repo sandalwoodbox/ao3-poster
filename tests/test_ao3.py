@@ -31,3 +31,34 @@ def test_build_post_data__handles_multivalues__multiple_values():
         (HEADER_MAP['Archive Warnings'], 'Graphic Depictions Of Violence'),
         (HEADER_MAP['Archive Warnings'], 'Major Character Death'),
     ]
+
+
+def test_build_post_data__handles_empty_data():
+    post_data = build_post_data({})
+    assert post_data == []
+
+
+def test_build_post_data__handles_unmapped_keys():
+    post_data = build_post_data({
+        'Extra field': 'value',
+    })
+    assert post_data == []
+
+
+def test_build_post_data__formats_body_text():
+    post_data = build_post_data({
+        'Extra field': 'value',
+    }, body_template='{{ data["Extra field"] }}')
+    assert post_data == [
+        (HEADER_MAP['Work text'], 'value')
+    ]
+
+
+def test_build_post_data__prefers_explicit_work_text():
+    post_data = build_post_data({
+        'Work text': 'foobar',
+        'Extra field': 'value',
+    }, body_template='{{ data["Extra field"] }}')
+    assert post_data == [
+        (HEADER_MAP['Work text'], 'foobar')
+    ]
