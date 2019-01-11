@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import bs4
+import jinja2
 import requests
 
 
@@ -12,6 +13,7 @@ SESSION_COOKIE_NAME = '_otwarchive_session'
 
 LOGIN_URL = 'https://archiveofourown.org/users/login'
 LOGOUT_URL = 'https://archiveofourown.org/users/logout'
+# URL to post to for creating new works
 POST_URL = 'https://archiveofourown.org/works'
 
 HEADER_MAP = {
@@ -36,7 +38,11 @@ def build_post_data(data, body_template=None):
     post_data = []
 
     for key, value in data.items():
-        post_key = HEADER_MAP[key]
+        post_key = HEADER_MAP.get(key)
+
+        if post_key is None:
+            continue
+
         if '[]' in post_key:
             for item in value.split(','):
                 post_data.append((
@@ -49,7 +55,28 @@ def build_post_data(data, body_template=None):
                 value.strip(),
             ))
 
+    if body_template is not None and 'Work text' not in data:
+        post_key = HEADER_MAP['Work text']
+        template = jinja2.Template(body_template)
+        value = template.render(data=data)
+        post_data.append((
+            post_key,
+            value,
+        ))
+
     return post_data
+
+
+def post(session_id, data, body_template=None):
+    # Takes data, posts to ao3, and returns the URL for the created work
+    # or raises an exception with validation errors.
+    post_data = build_post_data(data, body_template)
+    requests.post(
+        POST_URL,
+        post_data,
+        cookies={SESSION_COOKIE_NAME: session_id},
+        headers=REQUEST_HEADERS,
+    )
 
 
 def _is_failed_login(response):
@@ -89,15 +116,5 @@ def logout(session_id):
     requests.get(
         LOGOUT_URL,
         headers=REQUEST_HEADERS,
-        cookies={SESSION_COOKIE_NAME: session_id},
-    )
-
-
-def post(session_id, data, body_template=None):
-    # Takes data, posts to ao3, and returns the URL for the created work.
-    post_data = build_post_data(data)
-    requests.post(
-        POST_URL,
-        post_data,
         cookies={SESSION_COOKIE_NAME: session_id},
     )
