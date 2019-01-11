@@ -1,8 +1,12 @@
 # encoding: utf-8
 
+from urllib.parse import unquote
+
 import bs4
 import jinja2
 import requests
+
+from .exceptions import SessionExpired
 
 
 REQUEST_HEADERS = {
@@ -13,8 +17,15 @@ SESSION_COOKIE_NAME = '_otwarchive_session'
 
 LOGIN_URL = 'https://archiveofourown.org/users/login'
 LOGOUT_URL = 'https://archiveofourown.org/users/logout'
+# URL for new works form
+POST_FORM_URL = 'https://archiveofourown.org/works/new'
 # URL to post to for creating new works
-POST_URL = 'https://archiveofourown.org/works'
+POST_ACTION_URL = 'https://archiveofourown.org/works'
+
+# URL you are redirected to if session expires
+AUTH_ERROR_URL = 'https://archiveofourown.org/auth_error'
+# URL you are redirected to if cookie is "lost"
+LOST_COOKIE_URL = 'https://archiveofourown.org/lost_cookie'
 
 HEADER_MAP = {
     'Rating': 'work[rating_string]',
@@ -32,6 +43,15 @@ HEADER_MAP = {
     'This work is a remix, a translation, a podfic, or was inspired by another work': 'work[parent_attributes][url]',
     'Work text': 'work[chapter_attributes][content]',
 }
+
+
+def _validate_response_url(url):
+    expired_session_urls = (
+        AUTH_ERROR_URL,
+        LOST_COOKIE_URL,
+    )
+    if url in expired_session_urls:
+        raise SessionExpired
 
 
 def build_post_data(data, body_template=None):
@@ -70,13 +90,34 @@ def build_post_data(data, body_template=None):
 def post(session_id, data, body_template=None):
     # Takes data, posts to ao3, and returns the URL for the created work
     # or raises an exception with validation errors.
+    session = requests.Session()
+    session.headers.update(REQUEST_HEADERS)
+
+    # First, get an authenticity token.
+    response = session.get(
+        POST_FORM_URL,
+        cookies={SESSION_COOKIE_NAME: session_id},
+    )
+    soup = bs4.BeautifulSoup(response.text, 'lxml')
+    _validate_response_url(response.url)
+    strainer = bs4.SoupStrainer(id='work-form')
+    soup = bs4.BeautifulSoup(response.text, 'lxml', parse_only=strainer)
+    authenticity_token = soup.find(attrs={'name': 'authenticity_token'})['value']
+
+    # Now post data.
     post_data = build_post_data(data, body_template)
-    requests.post(
-        POST_URL,
+    post_data.update({
+        'utf8': '✓',
+        'authenticity_token': authenticity_token,
+    })
+    response = session.post(
+        POST_ACTION_URL,
         post_data,
         cookies={SESSION_COOKIE_NAME: session_id},
-        headers=REQUEST_HEADERS,
     )
+    _validate_response_url(response.url)
+
+    return response.url
 
 
 def _is_failed_login(response):
@@ -88,11 +129,13 @@ def login(username, password):
     session = requests.Session()
     session.headers.update(REQUEST_HEADERS)
 
+    # First, get an authenticity token.
     response = session.get(LOGIN_URL)
     strainer = bs4.SoupStrainer(id='loginform')
     soup = bs4.BeautifulSoup(response.text, 'lxml', parse_only=strainer)
     authenticity_token = soup.find(attrs={'name': 'authenticity_token'})['value']
 
+    # Now log in.
     login_data = {
         'utf8': '✓',
         'authenticity_token': authenticity_token,
@@ -109,7 +152,7 @@ def login(username, password):
     if _is_failed_login(response):
         return None
 
-    return response.cookies[SESSION_COOKIE_NAME]
+    return unquote(response.cookies[SESSION_COOKIE_NAME])
 
 
 def logout(session_id):
