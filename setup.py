@@ -27,11 +27,12 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'requests>=2.21.0',
+    'beautifulsoup4>=4.7.1',
     'click>=7.0',
     'google-api-python-client>=1.7.7',
-    'beautifulsoup4>=4.7.1',
+    'jinja2==2.10',
     'lxml>=4.3.0',
+    'requests>=2.21.0',
 ]
 
 # What packages are required only for tests?
