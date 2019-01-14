@@ -1,10 +1,9 @@
 # encoding: utf-8
 
-from urllib.parse import unquote
-
 import bs4
 import jinja2
 import requests
+from six.moves.urllib.parse import unquote
 
 from .exceptions import SessionExpired
 
