@@ -4,6 +4,7 @@ from google.auth.exceptions import DefaultCredentialsError
 from . import ao3
 from .config import load_session_id
 from .config import save_session_id
+from .exceptions import LoginRequired
 from .exceptions import SessionExpired
 from .exceptions import ValidationError
 from .utils.google_sheets import get_sheet_data
@@ -75,6 +76,8 @@ def post(sheet_id, count):
                 '{} was not uploaded'.format(work_title),
                 fg='red',
             )
+        except LoginRequired:
+            raise click.ClickException('Login is required. Please log in with `ao3 login`')
         except SessionExpired:
             raise click.ClickException('Login session expired. Please log in again with `ao3 login`')
         else:

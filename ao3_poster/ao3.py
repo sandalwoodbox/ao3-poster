@@ -5,6 +5,7 @@ import jinja2
 import requests
 from six.moves.urllib.parse import unquote
 
+from .exceptions import LoginRequired
 from .exceptions import SessionExpired
 
 
@@ -44,7 +45,15 @@ HEADER_MAP = {
 }
 
 
-def _validate_response_url(url):
+def _validate_response_url(response):
+    if response.status_code == 302:
+        url = response.headers['Location']
+    else:
+        url = response.url
+
+    if url == LOGIN_URL:
+        raise LoginRequired
+
     expired_session_urls = (
         AUTH_ERROR_URL,
         LOST_COOKIE_URL,
@@ -96,9 +105,10 @@ def post(session_id, data, body_template=None):
     response = session.get(
         POST_FORM_URL,
         cookies={SESSION_COOKIE_NAME: session_id},
+        allow_redirects=False,
     )
+    _validate_response_url(response)
     soup = bs4.BeautifulSoup(response.text, 'lxml')
-    _validate_response_url(response.url)
     strainer = bs4.SoupStrainer(id='work-form')
     soup = bs4.BeautifulSoup(response.text, 'lxml', parse_only=strainer)
     authenticity_token = soup.find(attrs={'name': 'authenticity_token'})['value']
@@ -114,7 +124,7 @@ def post(session_id, data, body_template=None):
         post_data,
         cookies={SESSION_COOKIE_NAME: session_id},
     )
-    _validate_response_url(response.url)
+    _validate_response_url(response)
 
     return response.url
 
