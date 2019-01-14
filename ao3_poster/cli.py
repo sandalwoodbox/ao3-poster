@@ -2,8 +2,8 @@ import click
 from google.auth.exceptions import DefaultCredentialsError
 
 from . import ao3
-from .config import load_session_id
-from .config import save_session_id
+from .session import load_session_cookies
+from .session import save_session_cookies
 from .exceptions import LoginRequired
 from .exceptions import SessionExpired
 from .exceptions import ValidationError
@@ -26,11 +26,11 @@ def login():
         hide_input=True,
         confirmation_prompt=True,
     )
-    session_id = ao3.login(username, password)
-    if session_id is None:
+    session_cookies = ao3.login(username, password)
+    if session_cookies is None:
         click.secho('Login failed. Please try again.', fg='red')
     else:
-        save_session_id(session_id)
+        save_session_cookies(session_cookies)
         click.secho('Login successful. Session id saved.')
 
 
@@ -39,10 +39,10 @@ def logout():
     """
     End your ao3 session
     """
-    session_id = load_session_id()
-    if session_id is not None:
-        ao3.logout(session_id)
-        save_session_id(None)
+    session_cookies = load_session_cookies()
+    if session_cookies is not None:
+        ao3.logout(session_cookies)
+        save_session_cookies(None)
 
 
 @cli.command()
@@ -63,10 +63,10 @@ def post(sheet_id, count):
         work_title = row.get('Work Title', 'Unknown Work')
         click.echo('Uploading to AO3: {}'.format(work_title))
 
-        session_id = load_session_id()
+        session_cookies = load_session_cookies()
 
         try:
-            work_url = ao3.post(session_id, row)
+            work_url = ao3.post(session_cookies, row)
         except ValidationError as exc:
             click.echo('Validation errors encountered while processing {}: {}'.format(
                 work_title,

@@ -33,7 +33,6 @@ REQUIRED = [
     'jinja2==2.10',
     'lxml>=4.3.0',
     'requests>=2.21.0',
-    'six>=1.12.0',
 ]
 
 # What packages are required only for tests?
