@@ -1,3 +1,7 @@
+class LoginRequired(Exception):
+    pass
+
+
 class SessionExpired(Exception):
     pass
 
