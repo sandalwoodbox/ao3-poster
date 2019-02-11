@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+import os
+
 import bs4
 import requests
 
@@ -9,22 +11,28 @@ from .exceptions import UnexpectedError
 from .exceptions import ValidationError
 
 
+AO3_URL = os.environ.get('AO3_URL', 'https://archiveofourown.org/')
+
+if not AO3_URL.endswith('/'):
+    AO3_URL += '/'
+
+
 REQUEST_HEADERS = {
     # AO3 blocks python-requests by default so we need to fake a different user agent.
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',  # noqa: E501
 }
 
-LOGIN_URL = 'https://archiveofourown.org/users/login'
-LOGOUT_URL = 'https://archiveofourown.org/users/logout'
+LOGIN_URL = '{}users/login'.format(AO3_URL)
+LOGOUT_URL = '{}users/logout'.format(AO3_URL)
 # URL for new works form
-POST_FORM_URL = 'https://archiveofourown.org/works/new'
+POST_FORM_URL = '{}works/new'.format(AO3_URL)
 # URL to post to for creating new works
-POST_ACTION_URL = 'https://archiveofourown.org/works'
+POST_ACTION_URL = '{}works'.format(AO3_URL)
 
 # URL you are redirected to if session expires
-AUTH_ERROR_URL = 'https://archiveofourown.org/auth_error'
+AUTH_ERROR_URL = '{}auth_error'.format(AO3_URL)
 # URL you are redirected to if cookie is "lost"
-LOST_COOKIE_URL = 'https://archiveofourown.org/lost_cookie'
+LOST_COOKIE_URL = '{}lost_cookie'.format(AO3_URL)
 
 HEADER_MAP = {
     'Rating': 'work[rating_string]',
