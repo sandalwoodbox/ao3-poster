@@ -142,7 +142,13 @@ def post(session, data, body_template=None):
     post_data += [
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
+
+        # Trigger a preview
         ('preview_button', 'Preview'),
+
+        # Without this attribute, AO3 will try to set the translation column to NULL
+        # if the work is a remix of another work.
+        ('work[parent_attributes][translation]', '0'),
     ]
     response = session.post(
         POST_ACTION_URL,
