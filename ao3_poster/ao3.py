@@ -6,6 +6,7 @@ import requests
 
 from .exceptions import LoginRequired
 from .exceptions import SessionExpired
+from .exceptions import ValidationError
 
 
 REQUEST_HEADERS = {
@@ -60,10 +61,16 @@ def _validate_response_url(response):
         raise SessionExpired
 
 
-def _get_authenticity_token(text, form_id):
+def get_authenticity_token(text, form_id):
     strainer = bs4.SoupStrainer(id=form_id)
     soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
     return soup.find(attrs={'name': 'authenticity_token'})['value']
+
+
+def get_validation_errors(text):
+    strainer = bs4.SoupStrainer(id='error')
+    soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
+    return [li.text for li in soup.find_all('li')]
 
 
 def build_post_data(data, body_template=None):
@@ -109,7 +116,7 @@ def post(session, data, body_template=None):
         allow_redirects=False,
     )
     _validate_response_url(response)
-    authenticity_token = _get_authenticity_token(response.text, 'work-form')
+    authenticity_token = get_authenticity_token(response.text, 'work-form')
 
     # Now post data.
     post_data = build_post_data(data, body_template)
@@ -125,6 +132,11 @@ def post(session, data, body_template=None):
     )
     _validate_response_url(response)
 
+    if response.url == POST_ACTION_URL:
+        validation_errors = get_validation_errors(response.content)
+        if validation_errors:
+            raise ValidationError(validation_errors)
+
     return response.url
 
 
@@ -139,7 +151,7 @@ def login(username, password):
 
     # First, get an authenticity token.
     response = session.get(LOGIN_URL)
-    authenticity_token = _get_authenticity_token(response.text, 'loginform')
+    authenticity_token = get_authenticity_token(response.text, 'loginform')
 
     # Now log in.
     login_data = {

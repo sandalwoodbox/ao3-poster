@@ -1,5 +1,27 @@
 from ao3_poster.ao3 import HEADER_MAP
 from ao3_poster.ao3 import build_post_data
+from ao3_poster.ao3 import get_validation_errors
+
+
+def test_get_validation_errors__no_errors():
+    html = ""
+    validation_errors = get_validation_errors(html)
+    assert validation_errors == []
+
+
+def test_get_validation_errors__with_errors():
+    html = """
+    <div id="error" class="error">
+        <h4>Sorry! We couldn't save this work because:</h4>
+        <ul>
+            <li>Please enter your story in the text field below.</li>
+        </ul>
+    </div>
+    """
+    validation_errors = get_validation_errors(html)
+    assert validation_errors == [
+        'Please enter your story in the text field below.',
+    ]
 
 
 def test_build_post_data__handles_single_values():
