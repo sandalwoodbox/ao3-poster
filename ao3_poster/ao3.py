@@ -148,6 +148,9 @@ def post(session, data, body_template=None):
         if validation_errors:
             raise ValidationError(validation_errors)
 
+    if response.status_code == 302:
+        return response.headers['Location']
+
     return response.url
 
 
