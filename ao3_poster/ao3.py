@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 import bs4
-import jinja2
 import requests
 
 from .exceptions import LoginRequired
@@ -96,8 +95,7 @@ def build_post_data(data, body_template=None):
 
     if body_template is not None and 'Work text' not in data:
         post_key = HEADER_MAP['Work text']
-        template = jinja2.Template(body_template)
-        value = template.render(data=data)
+        value = body_template.render(data=data)
         post_data.append((
             post_key,
             value,

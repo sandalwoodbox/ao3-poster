@@ -1,5 +1,6 @@
 import click
 import csv
+import jinja2
 from google.auth.exceptions import DefaultCredentialsError
 
 from . import ao3
@@ -46,12 +47,19 @@ def get_sheet(sheet_id, outfile, count):
     'csv_file',
     type=click.File('r')
 )
-def post(csv_file):
+@click.option(
+    '--body-template',
+    type=click.File('r'),
+)
+def post(csv_file, body_template=None):
     """
     Post a csv of data to ao3.
     """
     reader = csv.DictReader(csv_file)
     rows = list(reader)
+
+    if body_template is not None:
+        body_template = jinja2.Template(body_template.read())
 
     username = click.prompt('Username or email')
     password = click.prompt(
@@ -70,7 +78,11 @@ def post(csv_file):
         click.echo('Uploading to AO3: {}'.format(work_title))
 
         try:
-            work_url = ao3.post(session, row)
+            work_url = ao3.post(
+                session=session,
+                data=row,
+                body_template=body_template,
+            )
         except ValidationError as exc:
             click.echo('Validation errors encountered while processing {}:\n{}'.format(
                 work_title,
