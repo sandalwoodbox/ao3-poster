@@ -1,3 +1,5 @@
+import jinja2
+
 from ao3_poster.ao3 import HEADER_MAP
 from ao3_poster.ao3 import build_post_data
 from ao3_poster.ao3 import get_validation_errors
@@ -91,7 +93,7 @@ def test_build_post_data__handles_unmapped_keys():
 def test_build_post_data__formats_body_text():
     post_data = build_post_data({
         'Extra field': 'value',
-    }, body_template='{{ data["Extra field"] }}')
+    }, body_template=jinja2.Template('{{ data["Extra field"] }}'))
     assert post_data == [
         (HEADER_MAP['Work text'], 'value')
     ]
@@ -101,7 +103,7 @@ def test_build_post_data__prefers_explicit_work_text():
     post_data = build_post_data({
         'Work text': 'foobar',
         'Extra field': 'value',
-    }, body_template='{{ data["Extra field"] }}')
+    }, body_template=jinja2.Template('{{ data["Extra field"] }}'))
     assert post_data == [
         (HEADER_MAP['Work text'], 'foobar')
     ]
