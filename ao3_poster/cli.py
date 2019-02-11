@@ -6,6 +6,7 @@ from google.auth.exceptions import DefaultCredentialsError
 from . import ao3
 from .exceptions import LoginRequired
 from .exceptions import SessionExpired
+from .exceptions import UnexpectedError
 from .exceptions import ValidationError
 from .utils.google_sheets import get_sheet_data
 
@@ -88,6 +89,12 @@ def post(csv_file, body_template=None):
                 work_title,
                 '\n'.join(exc.errors)
             ))
+            click.secho(
+                '{} was not uploaded'.format(work_title),
+                fg='red',
+            )
+        except UnexpectedError:
+            click.secho('Server error encountered while processing {}'.format(work_title))
             click.secho(
                 '{} was not uploaded'.format(work_title),
                 fg='red',

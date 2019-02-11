@@ -5,6 +5,7 @@ import requests
 
 from .exceptions import LoginRequired
 from .exceptions import SessionExpired
+from .exceptions import UnexpectedError
 from .exceptions import ValidationError
 
 
@@ -128,6 +129,10 @@ def post(session, data, body_template=None):
         post_data,
         allow_redirects=False,
     )
+
+    if response.status_code == 500:
+        raise UnexpectedError('Received server error')
+
     _validate_response_url(response)
 
     if response.url == POST_ACTION_URL:
