@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import os
+import re
 
 import bs4
 import requests
@@ -76,9 +77,20 @@ def get_authenticity_token(text, form_id):
 
 
 def get_validation_errors(text):
-    strainer = bs4.SoupStrainer(id='error')
-    soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
-    return [li.text for li in soup.find_all('li')]
+    errors = []
+
+    soup = bs4.BeautifulSoup(text, 'lxml')
+    error = soup.find(id='error')
+    if error:
+        errors += [li.text for li in error.find_all('li')]
+
+    new_work_form = soup.find('form', id='new_work')
+    if new_work_form:
+        invalid_pseuds = new_work_form.find('h4', text=re.compile(r'These pseuds are invalid:'))
+        if invalid_pseuds:
+            errors += ['Invalid pseuds listed as authors']
+
+    return errors
 
 
 def build_post_data(data, body_template=None):
