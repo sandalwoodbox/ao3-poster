@@ -24,6 +24,9 @@ def cli():
     help='How many rows [1-10] to import from the sheet',
 )
 def get_sheet(sheet_id, outfile, count):
+    """
+    Download a google sheet as a csv.
+    """
     click.echo('\nDownloading google sheet data...')
     try:
         headers, rows = get_sheet_data(sheet_id, count)
@@ -44,6 +47,9 @@ def get_sheet(sheet_id, outfile, count):
     type=click.File('rb')
 )
 def post(csv):
+    """
+    Post a csv of data to ao3.
+    """
     username = click.prompt('Username or email')
     password = click.prompt(
         'Password',
