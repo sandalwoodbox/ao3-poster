@@ -113,18 +113,16 @@ def post(session, data, body_template=None):
 
     # Now post data.
     post_data = build_post_data(data, body_template)
-    post_data.append([
+    post_data += [
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
-        ('preview_button', 'Preview')
-    ])
+        ('preview_button', 'Preview'),
+    ]
     response = session.post(
         POST_ACTION_URL,
         post_data,
         allow_redirects=False,
     )
-    with open('/tmp/response.html', 'wb') as fp:
-        fp.write(response.content)
     _validate_response_url(response)
 
     return response.url
