@@ -35,9 +35,6 @@ def test_get_validation_errors__with_invalid_pseuds():
         <li>sandalwoodbox</li>
       </ul>
       <p><label for="work_pseud">Try again:</label></p>
-      <p title="try again">
-        <input class="autocomplete" autocomplete_method="/autocomplete/pseud" autocomplete_hint_text="Start typing for suggestions!" autocomplete_no_results_text="(No suggestions found)" autocomplete_min_chars="1" autocomplete_searching_text="Searching..." size="50" type="text" name="pseud[byline]" id="pseud_byline">
-      </p>
       <!-- expects a local variable "form" -->
     </form>
     """
