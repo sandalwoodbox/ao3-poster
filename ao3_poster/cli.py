@@ -16,7 +16,7 @@ def cli():
 
 @cli.command()
 @click.argument('sheet_id')
-@click.argument('outfile', type=click.File('wb'))
+@click.argument('outfile', type=click.File('w'))
 @click.option(
     '--count',
     default=1,
@@ -36,20 +36,23 @@ def get_sheet(sheet_id, outfile, count):
     click.secho('Done', fg='green')
 
     writer = csv.DictWriter(outfile, fieldnames=headers)
-
+    writer.writeheader()
     for row in rows[:count]:
         writer.writerow(row)
 
 
 @cli.command()
 @click.argument(
-    'csv',
-    type=click.File('rb')
+    'csv_file',
+    type=click.File('r')
 )
-def post(csv):
+def post(csv_file):
     """
     Post a csv of data to ao3.
     """
+    reader = csv.DictReader(csv_file)
+    rows = list(reader)
+
     username = click.prompt('Username or email')
     password = click.prompt(
         'Password',
@@ -62,8 +65,7 @@ def post(csv):
     else:
         click.secho('Login successful.', fg='green')
 
-    reader = csv.DictReader(csv)
-    for row in reader:
+    for row in rows:
         work_title = row.get('Work Title', 'Unknown Work')
         click.echo('Uploading to AO3: {}'.format(work_title))
 
