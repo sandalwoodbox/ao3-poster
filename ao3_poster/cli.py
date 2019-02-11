@@ -72,9 +72,9 @@ def post(csv_file):
         try:
             work_url = ao3.post(session, row)
         except ValidationError as exc:
-            click.echo('Validation errors encountered while processing {}: {}'.format(
+            click.echo('Validation errors encountered while processing {}:\n{}'.format(
                 work_title,
-                ', '.join(exc.errors)
+                '\n'.join(exc.errors)
             ))
             click.secho(
                 '{} was not uploaded'.format(work_title),
