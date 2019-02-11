@@ -105,7 +105,7 @@ def post(csv_file, body_template=None):
             raise click.ClickException('Login session expired. Please log in again with `ao3 login`')
         else:
             click.secho(
-                '{} uploaded successfully! {}'.format(work_title, work_url),
+                '{} uploaded successfully!\n{}'.format(work_title, work_url),
                 fg='green',
             )
 
