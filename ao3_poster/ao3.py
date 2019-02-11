@@ -99,12 +99,9 @@ def build_post_data(data, body_template=None):
     return post_data
 
 
-def post(session_cookies, data, body_template=None):
+def post(session, data, body_template=None):
     # Takes data, posts to ao3, and returns the URL for the created work
     # or raises an exception with validation errors.
-    session = requests.Session()
-    session.headers.update(REQUEST_HEADERS)
-    session.cookies = session_cookies
 
     # First, get an authenticity token.
     response = session.get(
@@ -119,12 +116,15 @@ def post(session_cookies, data, body_template=None):
     post_data.append([
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
+        ('preview_button', 'Preview')
     ])
     response = session.post(
         POST_ACTION_URL,
         post_data,
         allow_redirects=False,
     )
+    with open('/tmp/response.html', 'wb') as fp:
+        fp.write(response.content)
     _validate_response_url(response)
 
     return response.url
@@ -161,12 +161,8 @@ def login(username, password):
     if _is_failed_login(response):
         return None
 
-    return response.cookies
+    return session
 
 
-def logout(session_cookies):
-    requests.get(
-        LOGOUT_URL,
-        headers=REQUEST_HEADERS,
-        cookies=session_cookies,
-    )
+def logout(session):
+    session.get(LOGOUT_URL)
