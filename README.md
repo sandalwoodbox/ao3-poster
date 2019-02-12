@@ -18,18 +18,6 @@ pip install ao3-poster
 
 It is easiest at this time to download sheets as CSVs using the Google Sheets web interface.
 
-If you instead want to use ao3-poster to download csvs of google sheets,
-you will need to set up Google service application credentials.
-Follow the instructions here: https://cloud.google.com/docs/authentication/getting-started
-You only need to do the "Creating a service account" and "Setting the environment variable" sections.
-You will also need to enable the "Sheets" API for the credentials you create; the easiest way to do this will be to try to run an ao3-poster command and then use the link in the error message.
-
-You may then run:
-
-```
-ao3 get-sheet <sheet_id> data.csv
-```
-
 ### Uploading a CSV
 
 Once you have a data csv, you can upload it to ao3 using:

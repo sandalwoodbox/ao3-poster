@@ -2,46 +2,17 @@ import csv
 
 import click
 import jinja2
-from google.auth.exceptions import DefaultCredentialsError
 
 from . import ao3
 from .exceptions import LoginRequired
 from .exceptions import SessionExpired
 from .exceptions import UnexpectedError
 from .exceptions import ValidationError
-from .utils.google_sheets import get_sheet_data
 
 
 @click.group()
 def cli():
     pass
-
-
-@cli.command()
-@click.argument('sheet_id')
-@click.argument('outfile', type=click.File('w'))
-@click.option(
-    '--count',
-    default=1,
-    type=click.IntRange(1, 10),
-    help='How many rows [1-10] to import from the sheet',
-)
-def get_sheet(sheet_id, outfile, count):
-    """
-    Download a google sheet as a csv.
-    """
-    click.echo('\nDownloading google sheet data...')
-    try:
-        headers, rows = get_sheet_data(sheet_id, count)
-    except DefaultCredentialsError as exc:
-        raise click.ClickException(str(exc))
-
-    click.secho('Done', fg='green')
-
-    writer = csv.DictWriter(outfile, fieldnames=headers)
-    writer.writeheader()
-    for row in rows[:count]:
-        writer.writerow(row)
 
 
 @cli.command()
