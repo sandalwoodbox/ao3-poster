@@ -15,7 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-import ao3_poster
+import ao3_poster.__version__
 
 
 # -- Project information -----------------------------------------------------
