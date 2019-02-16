@@ -50,6 +50,10 @@ Once AO3 Poster is installed, you can post to AO3 by doing either of the followi
 Be sure to replace the example paths with the real paths to your ``csv`` and ``work_text_template.html`` files.
 See :ref:`creating-a-spreadsheet` and :ref:`work-text-templates` for more information about setting up those files.
 
+The created works on AO3 will be drafts, so you will be able to review them privately to confirm that everything looks right before making them public.
+
+To be polite, please refrain from posting more than ~10 works in a single batch with this tool.
+
 
 .. toctree::
    :maxdepth: 1
