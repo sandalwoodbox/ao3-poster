@@ -1,3 +1,5 @@
+.. _creating-a-spreadsheet:
+
 Creating a spreadsheet
 ======================
 
@@ -59,3 +61,5 @@ Comma-separated values **must not** have spaces after commas.
 .. image:: /_static/images/example-spreadsheet.png
 
 You can also include additional columns; these will not be submitted to AO3 directly but they will be available in your :ref:`work text template <work-text-templates>`.
+
+Once your spreadsheet is created, export it as a CSV and save it on your computer to use with AO3 Poster.
