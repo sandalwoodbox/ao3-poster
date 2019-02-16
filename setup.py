@@ -40,6 +40,7 @@ TESTS = [
     'pytest>=3.8.0',
     'pytest-mock>=1.10.0',
     'mock>=2.0.0',
+    'more-itertools<6.0.0',
 ]
 
 # What packages are optional?
