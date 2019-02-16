@@ -21,22 +21,22 @@ def cli():
     type=click.File('r')
 )
 @click.option(
-    '--body-template',
+    '--work-text-template',
     type=click.File('r'),
     help=(
         "The path to a jinja2 template for generating work"
         "text from csv data"
     ),
 )
-def post(csv_file, body_template=None):
+def post(csv_file, work_text_template=None):
     """
     Post new works to ao3 from a csv spreadsheet
     """
     reader = csv.DictReader(csv_file)
     rows = list(reader)
 
-    if body_template is not None:
-        body_template = jinja2.Template(body_template.read())
+    if work_text_template is not None:
+        work_text_template = jinja2.Template(work_text_template.read())
 
     username = click.prompt('Username or email')
     password = click.prompt(
@@ -58,7 +58,7 @@ def post(csv_file, body_template=None):
             work_url = ao3.post(
                 session=session,
                 data=row,
-                body_template=body_template,
+                work_text_template=work_text_template,
             )
         except ValidationError as exc:
             click.echo('Validation errors encountered while processing {}:\n{}'.format(
