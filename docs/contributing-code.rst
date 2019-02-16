@@ -3,6 +3,8 @@
 Contributing code to ao3-poster
 ===============================
 
+Contributions are welcome! The github repository is at https://github.com/sandalwoodbox/ao3-poster.
+
 Requirements
 ++++++++++++
 
