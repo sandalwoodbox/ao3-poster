@@ -90,7 +90,7 @@ def test_build_post_data__handles_unmapped_keys():
 def test_build_post_data__formats_body_text():
     post_data = build_post_data({
         'Extra field': 'value',
-    }, body_template=jinja2.Template('{{ data["Extra field"] }}'))
+    }, work_text_template=jinja2.Template('{{ data["Extra field"] }}'))
     assert post_data == [
         (HEADER_MAP['Work text'], 'value')
     ]
@@ -100,7 +100,7 @@ def test_build_post_data__prefers_explicit_work_text():
     post_data = build_post_data({
         'Work text': 'foobar',
         'Extra field': 'value',
-    }, body_template=jinja2.Template('{{ data["Extra field"] }}'))
+    }, work_text_template=jinja2.Template('{{ data["Extra field"] }}'))
     assert post_data == [
         (HEADER_MAP['Work text'], 'foobar')
     ]

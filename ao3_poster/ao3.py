@@ -93,7 +93,7 @@ def get_validation_errors(text):
     return errors
 
 
-def build_post_data(data, body_template=None):
+def build_post_data(data, work_text_template=None):
     post_data = []
 
     for key, value in data.items():
@@ -114,9 +114,9 @@ def build_post_data(data, body_template=None):
                 value.strip(),
             ))
 
-    if body_template is not None and 'Work text' not in data:
+    if work_text_template is not None and 'Work text' not in data:
         post_key = HEADER_MAP['Work text']
-        value = body_template.render(data=data)
+        value = work_text_template.render(data=data)
         post_data.append((
             post_key,
             value,
@@ -125,7 +125,7 @@ def build_post_data(data, body_template=None):
     return post_data
 
 
-def post(session, data, body_template=None):
+def post(session, data, work_text_template=None):
     # Takes data, posts to ao3, and returns the URL for the created work
     # or raises an exception with validation errors.
 
@@ -138,7 +138,7 @@ def post(session, data, body_template=None):
     authenticity_token = get_authenticity_token(response.text, 'work-form')
 
     # Now post data.
-    post_data = build_post_data(data, body_template)
+    post_data = build_post_data(data, work_text_template)
     post_data += [
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
