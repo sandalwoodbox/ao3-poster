@@ -14,6 +14,7 @@ lxml = "*"
 flake8 = "*"
 flake8-isort = "*"
 jinja2 = "*"
+sphinx = "*"
 
 [requires]
 python_version = "3.7"
