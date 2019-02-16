@@ -23,10 +23,14 @@ def cli():
 @click.option(
     '--body-template',
     type=click.File('r'),
+    help=(
+        "The path to a jinja2 template for generating work"
+        "text from csv data"
+    ),
 )
 def post(csv_file, body_template=None):
     """
-    Post a csv of data to ao3.
+    Post new works to ao3 from a csv spreadsheet
     """
     reader = csv.DictReader(csv_file)
     rows = list(reader)
