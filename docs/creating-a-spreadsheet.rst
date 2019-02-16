@@ -6,19 +6,19 @@ You can use whatever your favorite spreadsheet application is, as long as it sup
 When you're entering data into your spreadsheet, you may include any of the following columns:
 
 +--------------------------------------+---------------------------------+
-| Column header                        | Data type                       |
+| Column header (* = Required)         | Data type                       |
 +======================================+=================================+
-| Rating                               | ``Not Rated``,                  |
+| **Rating ***                         | ``Not Rated``,                  |
 |                                      | ``General Audiences``,          |
 |                                      | ``Teen And Up Audiences``,      |
 |                                      | ``Mature``,                     |
 |                                      | or ``Explicit``                 |
 +--------------------------------------+---------------------------------+
-| Archive Warnings                     | Comma-separated list of AO3     |
+| **Archive Warnings ***               | Comma-separated list of AO3     |
 |                                      | archive warnings (as they       |
 |                                      | appear on the New Post form.)   |
 +--------------------------------------+---------------------------------+
-| Fandoms                              | Comma-separated list of AO3     |
+| **Fandoms ***                        | Comma-separated list of AO3     |
 |                                      | fandom tags                     |
 +--------------------------------------+---------------------------------+
 | Category                             | Comma-separated list of AO3     |
@@ -33,7 +33,7 @@ When you're entering data into your spreadsheet, you may include any of the foll
 +--------------------------------------+---------------------------------+
 | Additional Tags                      | Comma-separated list of tags    |
 +--------------------------------------+---------------------------------+
-| Work Title                           | Text                            |
+| **Work Title ***                     | Text                            |
 +--------------------------------------+---------------------------------+
 | Creator/Pseud(s)                     | Comma-separated list of AO3     |
 |                                      | creator pseuds / usernames.     |
