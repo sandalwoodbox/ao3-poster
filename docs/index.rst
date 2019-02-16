@@ -31,6 +31,12 @@ The instructions below assume you installed Python using the method described ab
 
    $ pip3 install ao3-poster
 
+If you ever want to get a new version of ao3-poster, you can use:
+
+.. code-block:: bash
+
+   $ pip3 install -U ao3-poster
+
 Posting to AO3
 --------------
 
