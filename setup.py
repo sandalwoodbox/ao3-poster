@@ -51,6 +51,9 @@ EXTRAS = {
         'isort>=4.3.4',
         'testfixtures>=6.3.0',
     ],
+    'docs': [
+        'sphinx>=1.8.4',
+    ],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
