@@ -1,8 +1,11 @@
 import jinja2
+import pytest
 
 from ao3_poster.ao3 import HEADER_MAP
 from ao3_poster.ao3 import build_post_data
+from ao3_poster.ao3 import get_pseuds
 from ao3_poster.ao3 import get_validation_errors
+from ao3_poster.exceptions import ValidationError
 
 
 def test_get_validation_errors__no_errors():
@@ -42,6 +45,32 @@ def test_get_validation_errors__with_invalid_pseuds():
     assert validation_errors == [
         'Invalid pseuds listed as authors',
     ]
+
+
+def test_get_pseuds__one():
+    html = """
+    <select name="work[author_attributes][ids][]" id="work_author_attributes_ids_" multiple="multiple">
+        <option selected="selected" value="42">test</option>
+    </select>
+    """
+    pseuds = get_pseuds(html)
+    assert pseuds == {
+        'test': '42',
+    }
+
+
+def test_get_pseuds__multiple():
+    html = """
+    <select name="work[author_attributes][ids][]" id="work_author_attributes_ids_" multiple="multiple">
+        <option selected="selected" value="42">test</option>
+        <option value="44">test2</option>
+    </select>
+    """
+    pseuds = get_pseuds(html)
+    assert pseuds == {
+        'test': '42',
+        'test2': '44',
+    }
 
 
 def test_build_post_data__handles_single_values():
@@ -104,3 +133,45 @@ def test_build_post_data__prefers_explicit_work_text():
     assert post_data == [
         (HEADER_MAP['Work text'], 'foobar')
     ]
+
+
+def test_build_post_data__handles_pseuds__single():
+    post_data = build_post_data(
+        data={
+            'Creator/Pseud(s)': 'test',
+        },
+        pseuds={
+            'test': '42',
+        },
+    )
+    assert post_data == [
+        (HEADER_MAP['Creator/Pseud(s)'], '42'),
+    ]
+
+
+def test_build_post_data__handles_pseuds__multiple():
+    post_data = build_post_data(
+        data={
+            'Creator/Pseud(s)': 'test,test2',
+        },
+        pseuds={
+            'test': '42',
+            'test2': '43',
+        },
+    )
+    assert post_data == [
+        (HEADER_MAP['Creator/Pseud(s)'], '42'),
+        (HEADER_MAP['Creator/Pseud(s)'], '43'),
+    ]
+
+
+def test_build_post_data__handles_pseuds__incorrect():
+    with pytest.raises(ValidationError):
+        build_post_data(
+            data={
+                'Creator/Pseud(s)': 'test,test2',
+            },
+            pseuds={
+                'test': '42',
+            },
+        )

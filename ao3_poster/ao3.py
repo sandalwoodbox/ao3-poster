@@ -44,7 +44,8 @@ HEADER_MAP = {
     'Characters': 'work[character_string]',
     'Additional Tags': 'work[freeform_string]',
     'Work Title': 'work[title]',
-    'Creator/Pseud(s)': 'pseud[byline]',
+    'Creator/Pseud(s)': 'work[author_attributes][ids][]',
+    'Add co-creators?': 'pseud[byline]',
     'Summary': 'work[summary]',
     'Notes at the beginning': 'work[notes]',
     'Notes at the end': 'work[endnotes]',
@@ -76,6 +77,16 @@ def get_authenticity_token(text, form_id):
     return soup.find(attrs={'name': 'authenticity_token'})['value']
 
 
+def get_pseuds(text):
+    strainer = bs4.SoupStrainer(id='work_author_attributes_ids_')
+    soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
+    options = soup.find_all('option')
+    return {
+        option.string: option['value']
+        for option in options
+    }
+
+
 def get_validation_errors(text):
     errors = []
 
@@ -93,7 +104,7 @@ def get_validation_errors(text):
     return errors
 
 
-def build_post_data(data, work_text_template=None):
+def build_post_data(data, pseuds=None, work_text_template=None):
     post_data = []
 
     for key, value in data.items():
@@ -101,6 +112,20 @@ def build_post_data(data, work_text_template=None):
 
         if post_key is None:
             continue
+
+        if key == 'Creator/Pseud(s)':
+            values = value.split(',')
+            not_pseuds = set(values) - set(pseuds)
+
+            if not_pseuds:
+                raise ValidationError([(
+                    'The following are not your pseuds: {}.'
+                    ' Please use "Add co-creators?" for non-pseud co-creators.'
+                ).format(
+                    ', '.join(sorted(not_pseuds))
+                )])
+
+            value = ','.join([pseuds[v] for v in values])
 
         if '[]' in post_key:
             for item in value.split(','):
@@ -136,9 +161,12 @@ def post(session, data, work_text_template=None):
     )
     _validate_response_url(response)
     authenticity_token = get_authenticity_token(response.text, 'work-form')
+    pseuds = get_pseuds(response.text)
+
+    # Now get a pseud->id mapping
 
     # Now post data.
-    post_data = build_post_data(data, work_text_template)
+    post_data = build_post_data(data, pseuds, work_text_template)
     post_data += [
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
