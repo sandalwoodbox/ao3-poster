@@ -37,8 +37,11 @@ When you're entering data into your spreadsheet, you may include any of the foll
 +--------------------------------------+---------------------------------+
 | **Work Title ***                     | Text                            |
 +--------------------------------------+---------------------------------+
-| Creator/Pseud(s)                     | Comma-separated list of AO3     |
-|                                      | creator pseuds / usernames.     |
+| Creator/Pseud(s)                     | Comma-separated list of creator |
+|                                      | AO3 pseuds / usernames.         |
++--------------------------------------+---------------------------------+
+| Add co-creators?                     | Comma-separated list of co-     |
+|                                      | creator AO3 pseuds / usernames. |
 +--------------------------------------+---------------------------------+
 | Summary                              | Text                            |
 +--------------------------------------+---------------------------------+
