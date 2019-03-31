@@ -49,7 +49,9 @@ HEADER_MAP = {
     'Summary': 'work[summary]',
     'Notes at the beginning': 'work[notes]',
     'Notes at the end': 'work[endnotes]',
-    'This work is a remix, a translation, a podfic, or was inspired by another work': 'work[parent_attributes][url]',
+    'Parent Work URL': 'work[parent_attributes][url]',
+    'Parent Work Title': 'work[parent_attributes][title]',
+    'Parent Work Author': 'work[parent_attributes][author]',
     'Work text': 'work[chapter_attributes][content]',
 }
 
