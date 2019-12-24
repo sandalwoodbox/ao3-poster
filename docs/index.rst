@@ -31,11 +31,44 @@ The instructions below assume you installed Python using the method described ab
 
    $ pip3 install ao3-poster
 
-If you ever want to get a new version of ao3-poster, you can use:
+You may get the following error:
+
+.. code-block:: bash
+
+	Consider using the --user option or check the permissions.
+
+This error means that the install script doesn't have permissions to write to the default directory on your machine.
+You can instead install ao3-poster in a directory specific to your user by using the --user option, like this:
+
+.. code-block:: bash
+
+	$ pip3 install --user ao3-poster
+
+
+Upgrading AO3 Poster
+--------------------
+
+From time to time, AO3 may make changes to their user interface that break this script – for example, changing the internal name of one of the form fields.
+When that happens, you will need to get a new version of ao3-poster that handles the updated version.
+
+You can upgrade ao3-poster with the following command:
 
 .. code-block:: bash
 
    $ pip3 install -U ao3-poster
+
+You may get the following error:
+
+.. code-block:: bash
+
+	Consider using the --user option or check the permissions.
+
+This error means that the install script doesn't have permissions to write to the default directory on your machine.
+You can instead upgrade the version of ao3-poster installed in a directory specific to your user by using the --user option, like this:
+
+.. code-block:: bash
+
+	$ pip3 install --user ao3-poster
 
 Posting to AO3
 --------------
