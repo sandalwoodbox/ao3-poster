@@ -35,6 +35,8 @@ AUTH_ERROR_URL = '{}auth_error'.format(AO3_URL)
 # URL you are redirected to if cookie is "lost"
 LOST_COOKIE_URL = '{}lost_cookie'.format(AO3_URL)
 
+USER_DASHBOARD_REGEX = re.compile(r'^/users/([^/]+)$')
+
 HEADER_MAP = {
     'Rating': 'work[rating_string]',
     'Archive Warnings': 'work[warning_strings][]',
@@ -92,12 +94,28 @@ def get_languages(text):
 
 
 def get_pseuds(text):
-    strainer = bs4.SoupStrainer(id='work_author_attributes_ids_')
+    strainer = bs4.SoupStrainer(id='work_author_attributes_ids')
     soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
     options = soup.find_all('option')
+    if options:
+        return {
+            option.string: option['value']
+            for option in options
+        }
+
+    # If there are no options, this is the single case, which uses a single input field.
+    # soup.children returns a new iterator on each access.
+    user_id = soup.find(id='work_author_attributes_ids')['value']
+
+    strainer = bs4.SoupStrainer('a', href=USER_DASHBOARD_REGEX)
+    soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
+
+    dashboard_href = soup.a['href']
+    matches = USER_DASHBOARD_REGEX.search(dashboard_href)
+    pseud = matches.group(1)
+
     return {
-        option.string: option['value']
-        for option in options
+        pseud: user_id,
     }
 
 
