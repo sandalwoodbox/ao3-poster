@@ -3,6 +3,7 @@ import pytest
 
 from ao3_poster.ao3 import HEADER_MAP
 from ao3_poster.ao3 import build_post_data
+from ao3_poster.ao3 import get_languages
 from ao3_poster.ao3 import get_pseuds
 from ao3_poster.ao3 import get_validation_errors
 from ao3_poster.exceptions import ValidationError
@@ -71,6 +72,28 @@ def test_get_pseuds__multiple():
         'test': '42',
         'test2': '44',
     }
+
+
+def test_get_languages():
+    html = """
+    <select id="work_language_id" name="work[language_id]">
+        <option selected="selected" value="73">Afrikaans</option>
+    </select>
+    """
+    languages = get_languages(html)
+    assert languages == {
+        'Afrikaans': '73',
+    }
+
+
+def test_get_languages__excludes_select_a_language():
+    html = """
+    <select id="work_language_id" name="work[language_id]">
+        <option value="">Please select a language</option>
+    </select>
+    """
+    languages = get_languages(html)
+    assert languages == {}
 
 
 def test_build_post_data__handles_single_values():
