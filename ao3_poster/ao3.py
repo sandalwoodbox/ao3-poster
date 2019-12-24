@@ -52,6 +52,7 @@ HEADER_MAP = {
     'Parent Work URL': 'work[parent_attributes][url]',
     'Parent Work Title': 'work[parent_attributes][title]',
     'Parent Work Author': 'work[parent_attributes][author]',
+    'Language': 'work[language_id]',
     'Work text': 'work[chapter_attributes][content]',
 }
 
@@ -144,6 +145,8 @@ def build_post_data(data, pseuds, languages, work_text_template=None):
         if key == 'Language':
             if value not in languages:
                 errors.append('Unknown language: {}'.format(value))
+            else:
+                value = languages[value]
 
         if '[]' in post_key:
             for item in value.split(','):
