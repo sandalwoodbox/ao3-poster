@@ -52,6 +52,7 @@ HEADER_MAP = {
     'Parent Work URL': 'work[parent_attributes][url]',
     'Parent Work Title': 'work[parent_attributes][title]',
     'Parent Work Author': 'work[parent_attributes][author]',
+    'Language': 'work[language_id]',
     'Work text': 'work[chapter_attributes][content]',
 }
 
@@ -77,6 +78,17 @@ def get_authenticity_token(text, form_id):
     strainer = bs4.SoupStrainer(id=form_id)
     soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
     return soup.find(attrs={'name': 'authenticity_token'})['value']
+
+
+def get_languages(text):
+    strainer = bs4.SoupStrainer(id='work_language_id')
+    soup = bs4.BeautifulSoup(text, 'lxml', parse_only=strainer)
+    options = soup.find_all('option')
+    return {
+        option.string: option['value']
+        for option in options
+        if option['value']
+    }
 
 
 def get_pseuds(text):
@@ -106,8 +118,9 @@ def get_validation_errors(text):
     return errors
 
 
-def build_post_data(data, pseuds=None, work_text_template=None):
+def build_post_data(data, pseuds, languages, work_text_template=None):
     post_data = []
+    errors = []
 
     for key, value in data.items():
         post_key = HEADER_MAP.get(key)
@@ -117,17 +130,23 @@ def build_post_data(data, pseuds=None, work_text_template=None):
 
         if key == 'Creator/Pseud(s)':
             values = value.split(',')
-            not_pseuds = set(values) - set(pseuds)
+            invalid_pseuds = set(values) - set(pseuds)
 
-            if not_pseuds:
-                raise ValidationError([(
+            if invalid_pseuds:
+                errors.append((
                     'The following are not your pseuds: {}.'
                     ' Please use "Add co-creators?" for non-pseud co-creators.'
                 ).format(
-                    ', '.join(sorted(not_pseuds))
-                )])
+                    ', '.join(sorted(invalid_pseuds))
+                ))
+            else:
+                value = ','.join([pseuds[v] for v in values])
 
-            value = ','.join([pseuds[v] for v in values])
+        if key == 'Language':
+            if value not in languages:
+                errors.append('Unknown language: {}'.format(value))
+            else:
+                value = languages[value]
 
         if '[]' in post_key:
             for item in value.split(','):
@@ -140,6 +159,9 @@ def build_post_data(data, pseuds=None, work_text_template=None):
                 post_key,
                 value.strip(),
             ))
+
+    if errors:
+        raise ValidationError(errors)
 
     if work_text_template is not None and 'Work text' not in data:
         post_key = HEADER_MAP['Work text']
@@ -163,12 +185,18 @@ def post(session, data, work_text_template=None):
     )
     _validate_response_url(response)
     authenticity_token = get_authenticity_token(response.text, 'work-form')
+    languages = get_languages(response.text)
     pseuds = get_pseuds(response.text)
 
     # Now get a pseud->id mapping
 
     # Now post data.
-    post_data = build_post_data(data, pseuds, work_text_template)
+    post_data = build_post_data(
+        data=data,
+        languages=languages,
+        pseuds=pseuds,
+        work_text_template=work_text_template,
+    )
     post_data += [
         ('utf8', '✓'),
         ('authenticity_token', authenticity_token),
