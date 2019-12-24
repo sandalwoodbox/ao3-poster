@@ -220,7 +220,7 @@ def test_build_post_data__handles_pseuds__multiple():
     ]
 
 
-def test_build_post_data__handles_pseuds__incorrect():
+def test_build_post_data__handles_pseuds__invalid():
     with pytest.raises(ValidationError):
         build_post_data(
             data={
@@ -231,3 +231,45 @@ def test_build_post_data__handles_pseuds__incorrect():
             },
             languages={},
         )
+
+
+def test_build_post_data__handles_language():
+    post_data = build_post_data(
+        data={
+            'Language': 'English',
+        },
+        pseuds={},
+        languages={
+            'English': '100',
+        },
+    )
+    assert post_data == [
+        (HEADER_MAP['Language'], '100'),
+    ]
+
+
+def test_build_post_data__handles_language__invalid():
+    with pytest.raises(ValidationError):
+        build_post_data(
+            data={
+                'Language': 'English',
+            },
+            pseuds={},
+            languages={},
+        )
+
+
+def test_build_post_data__returns_all_errors():
+    with pytest.raises(ValidationError) as excinfo:
+        build_post_data(
+            data={
+                'Creator/Pseud(s)': 'test,test2',
+                'Language': 'English',
+            },
+            pseuds={},
+            languages={},
+        )
+
+    error_message = str(excinfo.value)
+    assert 'The following are not your pseuds' in error_message
+    assert 'Unknown language' in error_message
