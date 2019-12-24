@@ -117,7 +117,7 @@ def get_validation_errors(text):
     return errors
 
 
-def build_post_data(data, pseuds=None, languages=None, work_text_template=None):
+def build_post_data(data, pseuds, languages, work_text_template=None):
     post_data = []
     errors = []
 
@@ -141,7 +141,7 @@ def build_post_data(data, pseuds=None, languages=None, work_text_template=None):
             else:
                 value = ','.join([pseuds[v] for v in values])
 
-        if languages is not None and key == 'Language':
+        if key == 'Language':
             if value not in languages:
                 errors.append('Unknown language: {}'.format(value))
 
