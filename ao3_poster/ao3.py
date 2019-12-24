@@ -39,7 +39,7 @@ USER_DASHBOARD_REGEX = re.compile(r'^/users/([^/]+)$')
 
 HEADER_MAP = {
     'Rating': 'work[rating_string]',
-    'Archive Warnings': 'work[warning_strings][]',
+    'Archive Warnings': 'work[archive_warning_strings][]',
     'Fandoms': 'work[fandom_string]',
     'Category': 'work[category_string][]',
     'Relationships': 'work[relationship_string]',
