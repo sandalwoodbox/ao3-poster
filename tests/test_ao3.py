@@ -50,10 +50,11 @@ def test_get_validation_errors__with_invalid_pseuds():
 
 def test_get_pseuds__one():
     html = """
-    <select name="work[author_attributes][ids][]" id="work_author_attributes_ids_" multiple="multiple">
-        <option selected="selected" value="42">test</option>
-    </select>
-    """
+    <!DOCTYPE html>
+    <a href="/users/test/works">Hi, test!</a>
+    <a href="/users/test">Hi, test!</a>
+    <input value="42" multiple="multiple" type="hidden" name="work[author_attributes][ids][]" id="work_author_attributes_ids">'
+    """  # noqa: E501
     pseuds = get_pseuds(html)
     assert pseuds == {
         'test': '42',
@@ -62,7 +63,7 @@ def test_get_pseuds__one():
 
 def test_get_pseuds__multiple():
     html = """
-    <select name="work[author_attributes][ids][]" id="work_author_attributes_ids_" multiple="multiple">
+    <select name="work[author_attributes][ids][]" id="work_author_attributes_ids" multiple="multiple">
         <option selected="selected" value="42">test</option>
         <option value="44">test2</option>
     </select>
