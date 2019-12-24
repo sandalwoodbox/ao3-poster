@@ -50,7 +50,7 @@ When you're entering data into your spreadsheet, you may include any of the foll
 +------------------------+------------------------------------------+
 | Notes at the end       | Text                                     |
 +------------------------+------------------------------------------+
-| **Language**           | Valid AO3 language name (as they appear  |
+| **Language ***         | Valid AO3 language name (as they appear  |
 |                        | on the New Post form.)                   |
 +------------------------+------------------------------------------+
 | Work text              | Work HTML. *Don't include* if            |
