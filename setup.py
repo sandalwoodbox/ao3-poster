@@ -30,7 +30,7 @@ REQUIRED = [
     'beautifulsoup4>=4.7.1',
     'click>=7.0',
     'google-api-python-client>=1.7.7',
-    'jinja2==2.10.1',
+    'jinja2==2.11.3',
     'lxml>=4.3.0',
     'requests>=2.21.0',
 ]
