@@ -15,6 +15,9 @@ flake8 = "*"
 flake8-isort = "*"
 jinja2 = "*"
 sphinx = "*"
+pygments = "==2.7.4"
+rsa = "==4.7"
+httplib2 = "==0.19.0"
 
 [requires]
 python_version = "3.7"
