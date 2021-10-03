@@ -30,17 +30,9 @@ REQUIRED = [
     'beautifulsoup4>=4.7.1',
     'click>=7.0',
     'google-api-python-client>=1.7.7',
-    'jinja2==2.10.1',
+    'jinja2==2.11.3',
     'lxml>=4.3.0',
     'requests>=2.21.0',
-]
-
-# What packages are required only for tests?
-TESTS = [
-    'pytest>=3.8.0',
-    'pytest-mock>=1.10.0',
-    'mock>=2.0.0',
-    'more-itertools<6.0.0',
 ]
 
 # What packages are optional?
@@ -53,6 +45,12 @@ EXTRAS = {
     ],
     'docs': [
         'sphinx>=1.8.4',
+    ],
+    'tests': [
+        'pytest>=3.8.0',
+        'pytest-mock>=1.10.0',
+        'mock>=2.0.0',
+        'more-itertools<6.0.0',
     ],
 }
 
@@ -152,7 +150,6 @@ setup(
         'console_scripts': ['ao3=ao3_poster.cli:cli'],
     },
     install_requires=REQUIRED,
-    tests_require=TESTS,
     extras_require=EXTRAS,
     include_package_data=True,
     license='MIT',
